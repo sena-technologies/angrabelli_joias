@@ -1,7 +1,8 @@
 "use client"
 
-import { createContext, useContext, useReducer, ReactNode } from 'react'
+import { createContext, useContext, useReducer, ReactNode, useEffect, useState } from 'react'
 import { Product } from '@/types/product'
+import { getCartFromStorage, saveCartToStorage, clearCartStorage } from '@/hooks/use-local-storage'
 
 interface CartItem extends Product {
   quantity: number
@@ -91,6 +92,34 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 })
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Carregar dados do localStorage ao montar
+  useEffect(() => {
+    try {
+      const savedCart = getCartFromStorage()
+      if (savedCart && savedCart.items.length > 0) {
+        // Restaurar estado salvo
+        dispatch({ type: 'CLEAR_CART' })
+        savedCart.items.forEach(item => {
+          dispatch({ type: 'ADD_ITEM', payload: item })
+        })
+      }
+    } catch (error) {
+      console.warn('Error loading cart from storage:', error)
+    }
+    setIsMounted(true)
+  }, [])
+
+  // Salvar dados no localStorage sempre que o carrinho mudar
+  useEffect(() => {
+    if (isMounted) {
+      saveCartToStorage({
+        items: state.items,
+        total: state.total
+      })
+    }
+  }, [state, isMounted])
 
   const addItem = (product: Product) => {
     dispatch({ type: 'ADD_ITEM', payload: product })
@@ -133,5 +162,20 @@ export function useCart() {
   if (!context) {
     throw new Error('useCart must be used within a CartProvider')
   }
+  return context
+}
+
+export function useCartSafe() {
+  const context = useContext(CartContext)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted || !context) {
+    return null
+  }
+
   return context
 }
