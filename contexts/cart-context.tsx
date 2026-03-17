@@ -18,7 +18,7 @@ type CartAction =
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR_CART' }
 
-const CartContext = createContext<{
+export const CartContext = createContext<{
   state: CartState
   addItem: (product: Product) => void
   removeItem: (id: string) => void
