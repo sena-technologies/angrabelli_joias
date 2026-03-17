@@ -6,6 +6,7 @@ import { Search, ShoppingBag, Menu, X, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Logo } from '@/components/layout/logo'
 import { useCart } from '@/contexts/cart-context'
 import { useTheme } from 'next-themes'
 import {
@@ -33,10 +34,7 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600" />
-            <span className="text-xl font-heading font-bold">Lumina Joias</span>
-          </Link>
+          <Logo className="hover:opacity-80 transition-opacity" />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">

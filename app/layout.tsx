@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
 export const metadata: Metadata = {
-  title: 'Lumina Joias - Semijoias de Luxo',
+  title: 'Angrabelli Joias - Semijoias de Luxo',
   description: 'Descubra nossa coleção exclusiva de semijoias folheadas a ouro. Elegância e sofisticação em cada peça.',
   keywords: 'semijoias, joias folheadas, ouro, prata, acessórios femininos, bijuterias de luxo',
     generator: 'v0.dev'

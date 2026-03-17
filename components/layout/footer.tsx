@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Logo } from '@/components/layout/logo'
 
 export function Footer() {
   return (
@@ -9,10 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600" />
-              <span className="text-xl font-heading font-bold">Lumina Joias</span>
-            </div>
+            <Logo showText={true} href="/" />
             <p className="text-sm text-muted-foreground">
               Semijoias de luxo que realçam sua beleza natural. 
               Qualidade e elegância em cada peça.
@@ -86,7 +84,7 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 Lumina Joias. Todos os direitos reservados.</p>
+          <p>&copy; 2024 Angrabelli Joias. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
