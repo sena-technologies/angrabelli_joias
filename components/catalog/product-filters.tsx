@@ -1,50 +1,66 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { useSearchFilter } from '@/contexts/search-filter-context'
+import { Search } from 'lucide-react'
 
 const categories = [
-  { id: 'aneis', name: 'Anéis', count: 24 },
-  { id: 'brincos', name: 'Brincos', count: 18 },
-  { id: 'colares', name: 'Colares', count: 32 },
-  { id: 'pulseiras', name: 'Pulseiras', count: 15 },
+  { id: 'aneis', name: 'Anéis' },
+  { id: 'brincos', name: 'Brincos' },
+  { id: 'colares', name: 'Colares' },
+  { id: 'pulseiras', name: 'Pulseiras' },
 ]
 
 const materials = [
-  { id: 'ouro', name: 'Ouro 18k', count: 45 },
-  { id: 'prata', name: 'Prata 925', count: 28 },
-  { id: 'rose', name: 'Ouro Rosé', count: 16 },
+  { id: 'ouro', name: 'Ouro 18k' },
+  { id: 'prata', name: 'Prata 925' },
+  { id: 'rose', name: 'Ouro Rosé' },
 ]
 
 const colors = [
-  { id: 'dourado', name: 'Dourado', count: 45 },
-  { id: 'prateado', name: 'Prateado', count: 28 },
-  { id: 'rose', name: 'Rosé', count: 16 },
+  { id: 'dourado', name: 'Dourado' },
+  { id: 'prateado', name: 'Prateado' },
+  { id: 'rose', name: 'Rosé' },
 ]
 
 export function ProductFilters() {
-  const [priceRange, setPriceRange] = useState([0, 500])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([])
-  const [selectedColors, setSelectedColors] = useState<string[]>([])
+  const { filters, setSearch, setCategories, setPriceRange, setMaterials, setColors, clearFilters } = useSearchFilter()
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) return null
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
     if (checked) {
-      setSelectedCategories([...selectedCategories, categoryId])
+      setCategories([...filters.categories, categoryId])
     } else {
-      setSelectedCategories(selectedCategories.filter(id => id !== categoryId))
+      setCategories(filters.categories.filter(id => id !== categoryId))
     }
   }
 
-  const clearFilters = () => {
-    setPriceRange([0, 500])
-    setSelectedCategories([])
-    setSelectedMaterials([])
-    setSelectedColors([])
+  const handleMaterialChange = (materialId: string, checked: boolean) => {
+    if (checked) {
+      setMaterials([...filters.materials, materialId])
+    } else {
+      setMaterials(filters.materials.filter(id => id !== materialId))
+    }
+  }
+
+  const handleColorChange = (colorId: string, checked: boolean) => {
+    if (checked) {
+      setColors([...filters.colors, colorId])
+    } else {
+      setColors(filters.colors.filter(id => id !== colorId))
+    }
   }
 
   return (
@@ -56,6 +72,21 @@ export function ProductFilters() {
         </Button>
       </div>
 
+      {/* Search */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar produtos..."
+              value={filters.search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Price Range */}
       <Card>
         <CardHeader>
@@ -63,15 +94,15 @@ export function ProductFilters() {
         </CardHeader>
         <CardContent className="space-y-4">
           <Slider
-            value={priceRange}
-            onValueChange={setPriceRange}
+            value={filters.priceRange}
+            onValueChange={(value) => setPriceRange(value as [number, number])}
             max={500}
             step={10}
             className="w-full"
           />
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>R$ {priceRange[0]}</span>
-            <span>R$ {priceRange[1]}</span>
+            <span>R$ {filters.priceRange[0]}</span>
+            <span>R$ {filters.priceRange[1]}</span>
           </div>
         </CardContent>
       </Card>
@@ -86,7 +117,7 @@ export function ProductFilters() {
             <div key={category.id} className="flex items-center space-x-2">
               <Checkbox
                 id={category.id}
-                checked={selectedCategories.includes(category.id)}
+                checked={filters.categories.includes(category.id)}
                 onCheckedChange={(checked) => 
                   handleCategoryChange(category.id, checked as boolean)
                 }
@@ -94,9 +125,6 @@ export function ProductFilters() {
               <Label htmlFor={category.id} className="text-sm flex-1">
                 {category.name}
               </Label>
-              <span className="text-xs text-muted-foreground">
-                ({category.count})
-              </span>
             </div>
           ))}
         </CardContent>
@@ -112,21 +140,14 @@ export function ProductFilters() {
             <div key={material.id} className="flex items-center space-x-2">
               <Checkbox
                 id={material.id}
-                checked={selectedMaterials.includes(material.id)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setSelectedMaterials([...selectedMaterials, material.id])
-                  } else {
-                    setSelectedMaterials(selectedMaterials.filter(id => id !== material.id))
-                  }
-                }}
+                checked={filters.materials.includes(material.id)}
+                onCheckedChange={(checked) => 
+                  handleMaterialChange(material.id, checked as boolean)
+                }
               />
               <Label htmlFor={material.id} className="text-sm flex-1">
                 {material.name}
               </Label>
-              <span className="text-xs text-muted-foreground">
-                ({material.count})
-              </span>
             </div>
           ))}
         </CardContent>
@@ -142,21 +163,14 @@ export function ProductFilters() {
             <div key={color.id} className="flex items-center space-x-2">
               <Checkbox
                 id={color.id}
-                checked={selectedColors.includes(color.id)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setSelectedColors([...selectedColors, color.id])
-                  } else {
-                    setSelectedColors(selectedColors.filter(id => id !== color.id))
-                  }
-                }}
+                checked={filters.colors.includes(color.id)}
+                onCheckedChange={(checked) => 
+                  handleColorChange(color.id, checked as boolean)
+                }
               />
               <Label htmlFor={color.id} className="text-sm flex-1">
                 {color.name}
               </Label>
-              <span className="text-xs text-muted-foreground">
-                ({color.count})
-              </span>
             </div>
           ))}
         </CardContent>
