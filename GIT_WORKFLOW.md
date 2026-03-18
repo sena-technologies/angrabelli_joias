@@ -8,7 +8,8 @@ main (Branch Principal - Produção)
         ├── feature/cart-components ✅
         ├── feature/cart-persistence ✅
         ├── feature/checkout-page ✅
-        └── feature/expand-catalog ✅
+        ├── feature/expand-catalog ✅
+        └── feature/search-and-filters ✅
 ```
 
 ## 🔄 Como Trabalhar com o Projeto
@@ -92,16 +93,21 @@ git push origin main --tags
 - Produtos em 4 categorias (Anéis, Brincos, Colares, Pulseiras)
 - Todos com imagens, descrições, preços e ratings
 
+### ✅ feature/search-and-filters
+- Contexto `SearchFilterContext` para gerenciamento global de filtros
+- Busca por nome e descrição de produtos (search)
+- Filtros por categoria, faixa de preço, material e cor
+- Componente `ProductFilters` com interface intuitiva
+- Lógica de aplicação de filtros no `ProductGrid`
+- Sem resultados encontrados com mensagem amigável
+- Paginação integrada com filtros
+
 ---
 
 ## 🚀 Próximas Features Sugeridas
 
 ```
-feature/search-and-filters
-  - Busca por nome de produto
-  - Filtros por categoria, preço, material
-
-feature/product-details-page
+feature/product-details-page (em desenvolvimento ⚠️)
   - Página detalhada do produto
   - Galeria de imagens
   - Avaliações e comentários
